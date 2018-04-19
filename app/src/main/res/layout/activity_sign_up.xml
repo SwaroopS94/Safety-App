@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.example.swaroopsrinivasan.safety_app.activity.SignUpActivity">
+
+    <EditText
+        android:id="@+id/et_sign_up_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="ENTER YOUR SHOW NAME"
+        android:background="@drawable/rectangle"
+        android:padding="@dimen/edit_text_padding_5"
+        android:layout_centerInParent="true"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="login"
+        android:id="@+id/btn_login"
+        android:background="@android:color/holo_green_dark"
+        android:layout_below="@id/et_sign_up_name"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/margin_10"
+        android:width="200dp"
+        android:textStyle="bold"
+        />
+
+    <Button
+        android:id="@+id/btn_sign_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="sign up"
+        android:background="@android:color/holo_green_dark"
+        android:layout_below="@id/btn_login"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/margin_10"
+        android:width="200dp"
+        android:textStyle="bold"
+        />
+
+</RelativeLayout>
