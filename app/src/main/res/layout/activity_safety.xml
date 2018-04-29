@@ -9,10 +9,20 @@
         android:id="@+id/btn_select_contacts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="select contacts"
+        android:text="Add Contacts"
         android:background="@android:color/holo_green_dark"
         android:padding="@dimen/margin_10"
         android:layout_margin="@dimen/margin_10"
+        />
+    <Button
+        android:id="@+id/btn_share_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share Location"
+        android:background="@android:color/holo_green_dark"
+        android:padding="@dimen/margin_10"
+        android:layout_margin="@dimen/margin_10"
+        android:layout_below="@id/btn_select_contacts"
         />
 
 </RelativeLayout>

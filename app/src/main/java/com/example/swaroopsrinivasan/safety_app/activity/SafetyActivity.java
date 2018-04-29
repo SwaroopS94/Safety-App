@@ -20,6 +20,7 @@ import butterknife.ButterKnife;
 
 public class SafetyActivity extends AppCompatActivity implements View.OnClickListener{
     @BindView(R.id.btn_select_contacts)Button btnSelectContacts;
+    @BindView(R.id.btn_share_location)Button btnShareLocation;
     ArrayAdapter<String> arrayAdapter;
 
     @Override
@@ -28,6 +29,7 @@ public class SafetyActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_safety);
         ButterKnife.bind(this);
         btnSelectContacts.setOnClickListener(this);
+        btnShareLocation.setOnClickListener(this);
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_multichoice);
     }
 
@@ -36,6 +38,9 @@ public class SafetyActivity extends AppCompatActivity implements View.OnClickLis
         switch (view.getId()) {
             case R.id.btn_select_contacts:
                 new ContactsSelector(this, arrayAdapter);
+                break;
+            case R.id.btn_share_location:
+                startActivity(new Intent(this, TrackerActivity.class));
                 break;
         }
     }
