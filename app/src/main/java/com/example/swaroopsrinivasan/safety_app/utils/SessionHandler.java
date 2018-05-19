@@ -12,6 +12,8 @@ public class SessionHandler {
     public static SessionHandler mSessionHandler;
 
     public List<Contact> mSafetyContacts;
+
+    public String username;
     public SessionHandler() {
 
     }
@@ -31,5 +33,13 @@ public class SessionHandler {
 
     public void setmSafetyContacts(List<Contact> safetyContacts) {
         mSafetyContacts = safetyContacts;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
     }
 }

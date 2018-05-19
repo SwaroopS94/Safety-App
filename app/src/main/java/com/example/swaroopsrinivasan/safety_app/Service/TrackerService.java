@@ -4,7 +4,10 @@ package com.example.swaroopsrinivasan.safety_app.Service;
  * Created by swaroop.srinivasan on 4/29/18.
  */
 
+import com.example.swaroopsrinivasan.safety_app.Model.DevicePosition;
 import com.example.swaroopsrinivasan.safety_app.R;
+import com.example.swaroopsrinivasan.safety_app.utils.DeviceUtility;
+import com.example.swaroopsrinivasan.safety_app.utils.SessionHandler;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -12,7 +15,6 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.*;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -26,7 +28,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.Manifest;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -37,6 +38,8 @@ public class TrackerService extends Service {
 
     private static final String TAG = TrackerService.class.getSimpleName();
 
+    private DevicePosition devicePosition;
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -45,9 +48,14 @@ public class TrackerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        devicePosition = new DevicePosition();
+        devicePosition.imei = DeviceUtility.getDeviceImei(this);
+        devicePosition.name = SessionHandler.getInstance().getUsername();
         buildNotification();
         loginToFirebase();
     }
+
+
 
     private void buildNotification() {
         String stop = "stop";
@@ -92,11 +100,12 @@ public class TrackerService extends Service {
             }
         });
     }
+    int count =0;
 
     private void requestLocationUpdates() {
         LocationRequest request = new LocationRequest();
-        request.setInterval(100000);
-        request.setFastestInterval(50000);
+        request.setInterval(10000);
+        request.setFastestInterval(5000);
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(this);
         final String path = getString(R.string.firebase_path) + "/" + getString(R.string.transport_id);
@@ -108,11 +117,12 @@ public class TrackerService extends Service {
             client.requestLocationUpdates(request, new LocationCallback() {
                 @Override
                 public void onLocationResult(LocationResult locationResult) {
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference(path);
-                    Location location = locationResult.getLastLocation();
-                    if (location != null) {
-                        Log.d(TAG, "location update " + location);
-                        ref.setValue(location);
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("message");
+                    devicePosition.location = locationResult.getLastLocation();
+
+                    if (devicePosition != null) {
+                        Log.d(TAG, "location update " + devicePosition);
+                        ref.setValue("Test, value"+(count++));
                     }
                 }
             }, null);
