@@ -8,11 +8,14 @@ import com.example.swaroopsrinivasan.safety_app.Model.DevicePosition;
 import com.example.swaroopsrinivasan.safety_app.R;
 import com.example.swaroopsrinivasan.safety_app.utils.DeviceUtility;
 import com.example.swaroopsrinivasan.safety_app.utils.SessionHandler;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
@@ -29,6 +32,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.Manifest;
+import android.location.Location;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -38,7 +42,6 @@ public class TrackerService extends Service {
 
     private static final String TAG = TrackerService.class.getSimpleName();
 
-    private DevicePosition devicePosition;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -48,9 +51,6 @@ public class TrackerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        devicePosition = new DevicePosition();
-        devicePosition.imei = DeviceUtility.getDeviceImei(this);
-        devicePosition.name = SessionHandler.getInstance().getUsername();
         buildNotification();
         loginToFirebase();
     }
@@ -117,16 +117,17 @@ public class TrackerService extends Service {
             client.requestLocationUpdates(request, new LocationCallback() {
                 @Override
                 public void onLocationResult(LocationResult locationResult) {
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("message");
-                    devicePosition.location = locationResult.getLastLocation();
-
-                    if (devicePosition != null) {
-                        Log.d(TAG, "location update " + devicePosition);
-                        ref.setValue("Test, value"+(count++));
-                    }
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                    pushUserLocation(ref,locationResult);
                 }
             }, null);
         }
+    }
+
+    public void pushUserLocation(DatabaseReference reference,LocationResult locationResult) {
+        String imei = DeviceUtility.getDeviceImei(this);
+        DevicePosition devicePosition = new DevicePosition(imei,locationResult.getLastLocation().getLatitude(),locationResult.getLastLocation().getLongitude());
+        reference.child("Users").child(imei).setValue(devicePosition);
     }
 
 }

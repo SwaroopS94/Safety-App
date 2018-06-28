@@ -9,28 +9,33 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
 import android.support.v4.content.PermissionChecker;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.swaroopsrinivasan.safety_app.Dialog.ContactsSelector;
 import com.example.swaroopsrinivasan.safety_app.R;
 import com.example.swaroopsrinivasan.safety_app.Service.TrackerService;
 
-import java.security.Permission;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SafetyActivity extends AppCompatActivity implements View.OnClickListener{
+public class SafetyActivity extends BaseActivity implements View.OnClickListener{
     @BindView(R.id.btn_select_contacts)Button btnSelectContacts;
     @BindView(R.id.btn_share_location)Button btnShareLocation;
+    @BindView(R.id.btn_track_user) Button btnTrackUser;
+
+    @BindView(R.id.rl_parent_layout_safety_activity) RelativeLayout rlParentLayout;
+
     ArrayAdapter<String> arrayAdapter;
 
     String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
+
+    FrameLayout fragmentFrame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +44,14 @@ public class SafetyActivity extends AppCompatActivity implements View.OnClickLis
         ButterKnife.bind(this);
         btnSelectContacts.setOnClickListener(this);
         btnShareLocation.setOnClickListener(this);
+        btnTrackUser.setOnClickListener(this);
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_multichoice);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        fragmentFrame = findViewById(R.id.user_tracker_frame);
     }
 
     @Override
@@ -55,6 +62,10 @@ public class SafetyActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.btn_share_location:
                 checkPermissionStatus();
+                break;
+
+            case R.id.btn_track_user:
+                startActivity(new Intent(this, ServerTrackerActivity.class));
                 break;
         }
     }

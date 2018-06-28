@@ -23,12 +23,17 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.SafetyActivity" />
-        <activity android:name=".activity.TrackerActivity" />
+        <activity android:name=".activity.ServerTrackerActivity" />
 
         <service
             android:name=".Service.TrackerService"
             android:enabled="true"
             android:exported="true"></service>
+
+        <service android:name=".Service.ServerPositionUpdateService"
+            android:enabled="true"
+            android:exported="true"
+            />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

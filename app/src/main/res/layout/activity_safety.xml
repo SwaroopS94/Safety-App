@@ -5,6 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.swaroopsrinivasan.safety_app.activity.SafetyActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/rl_parent_layout_safety_activity"
+        >
+
     <Button
         android:id="@+id/btn_select_contacts"
         android:layout_width="wrap_content"
@@ -33,7 +40,14 @@
         android:background="@android:color/holo_green_dark"
         android:padding="@dimen/margin_10"
         android:layout_margin="@dimen/margin_10"
-        android:layout_below="@id/btn_select_contacts"
+        android:layout_below="@id/btn_share_location"
+        />
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/user_tracker_frame"
         />
 
 </RelativeLayout>

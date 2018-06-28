@@ -12,11 +12,17 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.example.swaroopsrinivasan.safety_app.R;
 import com.example.swaroopsrinivasan.safety_app.Service.TrackerService;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
 
-public class TrackerActivity extends Activity {
+public abstract class TrackerActivity extends BaseActivity implements OnMapReadyCallback{
 
     private static final int PERMISSIONS_REQUEST = 1;
 
@@ -24,28 +30,35 @@ public class TrackerActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Check location permission is granted - if it is, start
+        // the service, otherwise request the permission
+        int permission = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+        if (permission == PackageManager.PERMISSION_GRANTED) {
+            //startTrackerService();
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST);
+        }
+
         // Check GPS is enabled
         LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             Toast.makeText(this, "Please enable location services", Toast.LENGTH_SHORT).show();
             finish();
         }
-
-        // Check location permission is granted - if it is, start
-        // the service, otherwise request the permission
-        int permission = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION);
-        if (permission == PackageManager.PERMISSION_GRANTED) {
-            startTrackerService();
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST);
-        }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+
+
     private void startTrackerService() {
-        startService(new Intent(this, TrackerService.class));
+        //startService(new Intent(this, TrackerService.class));
         //finish();
     }
 
