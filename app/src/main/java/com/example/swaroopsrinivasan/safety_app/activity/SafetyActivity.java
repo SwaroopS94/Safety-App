@@ -2,6 +2,7 @@ package com.example.swaroopsrinivasan.safety_app.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -18,8 +19,9 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.swaroopsrinivasan.safety_app.Dialog.ContactsSelector;
+import com.example.swaroopsrinivasan.safety_app.Dialog.CustomEditTextDialog;
 import com.example.swaroopsrinivasan.safety_app.R;
-import com.example.swaroopsrinivasan.safety_app.Service.TrackerService;
+import com.example.swaroopsrinivasan.safety_app.Service.LocationUpdateService;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,6 +38,8 @@ public class SafetyActivity extends BaseActivity implements View.OnClickListener
     String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
 
     FrameLayout fragmentFrame;
+
+    CustomEditTextDialog userNameInputDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +69,8 @@ public class SafetyActivity extends BaseActivity implements View.OnClickListener
                 break;
 
             case R.id.btn_track_user:
-                startActivity(new Intent(this, ServerTrackerActivity.class));
+                userNameInputDialog = new CustomEditTextDialog(this,btnPositiveDialogListener,btnNegativeDialogListener);
+                userNameInputDialog.show();
                 break;
         }
     }
@@ -94,7 +99,7 @@ public class SafetyActivity extends BaseActivity implements View.OnClickListener
                 }
             }
         }
-        startService(new Intent(this, TrackerService.class));
+        startService(new Intent(this, LocationUpdateService.class));
         return true;
     }
 
@@ -108,7 +113,30 @@ public class SafetyActivity extends BaseActivity implements View.OnClickListener
                     requestPermissions(permissions, 0);
                 }
             }
-            startService(new Intent(this, TrackerService.class));
+            startService(new Intent(this, LocationUpdateService.class));
         }
     }
+
+    View.OnClickListener btnPositiveDialogListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            String userName = userNameInputDialog.getUserText();
+            if(userName != null && userName.length() > 0) {
+                Intent intent  = new Intent(SafetyActivity.this, ServerTrackerActivity.class);
+                intent.putExtra("UserName",userName);
+                startActivity(intent);
+            }
+            else {
+                userNameInputDialog.cancel();
+            }
+        }
+    };
+
+    View.OnClickListener btnNegativeDialogListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View view) {
+            userNameInputDialog.cancel();
+        }
+    };
 }

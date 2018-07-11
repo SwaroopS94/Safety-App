@@ -7,15 +7,12 @@ package com.example.swaroopsrinivasan.safety_app.Service;
 import com.example.swaroopsrinivasan.safety_app.Model.DevicePosition;
 import com.example.swaroopsrinivasan.safety_app.R;
 import com.example.swaroopsrinivasan.safety_app.utils.DeviceUtility;
-import com.example.swaroopsrinivasan.safety_app.utils.SessionHandler;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.swaroopsrinivasan.safety_app.utils.SafetyAppSharedPref;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
@@ -32,15 +29,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.Manifest;
-import android.location.Location;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
-public class TrackerService extends Service {
+public class LocationUpdateService extends Service {
 
-    private static final String TAG = TrackerService.class.getSimpleName();
+    private static final String TAG = LocationUpdateService.class.getSimpleName();
 
 
     @Override
@@ -126,8 +122,9 @@ public class TrackerService extends Service {
 
     public void pushUserLocation(DatabaseReference reference,LocationResult locationResult) {
         String imei = DeviceUtility.getDeviceImei(this);
-        DevicePosition devicePosition = new DevicePosition(imei,locationResult.getLastLocation().getLatitude(),locationResult.getLastLocation().getLongitude());
-        reference.child("Users").child(imei).setValue(devicePosition);
+        String userName = SafetyAppSharedPref.getInstance().getUserName();
+        DevicePosition devicePosition = new DevicePosition(userName,imei,locationResult.getLastLocation().getLatitude(),locationResult.getLastLocation().getLongitude());
+        reference.child("Users").child(userName).setValue(devicePosition);
     }
 
 }

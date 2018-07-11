@@ -5,21 +5,13 @@ package com.example.swaroopsrinivasan.safety_app.activity;
  */
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.example.swaroopsrinivasan.safety_app.R;
-import com.example.swaroopsrinivasan.safety_app.Service.TrackerService;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
 public abstract class TrackerActivity extends BaseActivity implements OnMapReadyCallback{
@@ -58,7 +50,7 @@ public abstract class TrackerActivity extends BaseActivity implements OnMapReady
 
 
     private void startTrackerService() {
-        //startService(new Intent(this, TrackerService.class));
+        //startService(new Intent(this, LocationUpdateService.class));
         //finish();
     }
 

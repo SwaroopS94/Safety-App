@@ -26,11 +26,11 @@
         <activity android:name=".activity.ServerTrackerActivity" />
 
         <service
-            android:name=".Service.TrackerService"
+            android:name=".Service.LocationUpdateService"
             android:enabled="true"
             android:exported="true"></service>
 
-        <service android:name=".Service.ServerPositionUpdateService"
+        <service android:name=".Service.ClientTrackerService"
             android:enabled="true"
             android:exported="true"
             />

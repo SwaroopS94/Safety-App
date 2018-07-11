@@ -36,7 +36,7 @@ public class SafetyAppSharedPref {
     }
 
     public void setUserName(String userName) {
-        mSharedPreferences.edit().putString(userName,userName);
+        mSharedPreferences.edit().putString(this.userName,userName).apply();
     }
 
     public String getUserName() {

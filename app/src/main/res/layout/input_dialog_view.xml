@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enter UserName"
+        android:layout_centerInParent="true"
+        android:id="@+id/tv_dialog_username"
+        android:textSize="@dimen/text_size_30"
+        android:layout_margin="@dimen/margin_10"
+        />
+    <EditText
+        android:id="@+id/et_input_user_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Input User"
+        android:padding="@dimen/edit_text_padding_5"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/rectangle"
+        android:layout_marginBottom="@dimen/margin_10"
+        android:layout_below="@id/tv_dialog_username"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/et_input_user_dialog"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/margin_10"
+        >
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/dialog_negative_button"
+            android:text="cancel"
+            android:padding="@dimen/edit_text_padding_5"
+            />
+        <Button
+            android:id="@+id/dialog_positive_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="Track"
+            android:padding="@dimen/edit_text_padding_5"
+            />
+    </RelativeLayout>
+</RelativeLayout>

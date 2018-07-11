@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.annotations.SerializedName;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,8 +21,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DevicePosition{
+    @SerializedName("name")
     public String name;
+    @SerializedName("imei")
+    public String imei;
+    @SerializedName("latitude")
     public Double latitude;
+    @SerializedName("longitude")
     public Double longitude;
-
 }

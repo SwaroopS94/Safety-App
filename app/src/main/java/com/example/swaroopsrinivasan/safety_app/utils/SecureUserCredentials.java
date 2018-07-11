@@ -6,6 +6,8 @@ import com.example.swaroopsrinivasan.safety_app.SafetyAppApplication;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by swaroop.srinivasan on 3/31/18.
