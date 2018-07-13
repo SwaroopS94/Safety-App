@@ -1,8 +1,13 @@
 package com.example.swaroopsrinivasan.safety_app.activity;
 
 import android.content.Intent;
+import android.graphics.Interpolator;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 
 import com.example.swaroopsrinivasan.safety_app.Listener.ServerTrackerServiceListener;
@@ -18,6 +23,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import butterknife.OnClick;
 
 
 /**
@@ -32,6 +38,7 @@ public class ServerTrackerActivity extends TrackerActivity implements ServerTrac
     SessionHandler mSessionHandler;
 
     Marker positionMarker = null;
+    LatLng previousPosition,currentPosition;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,25 +71,61 @@ public class ServerTrackerActivity extends TrackerActivity implements ServerTrac
         launchUserTrackerService();
     }
 
-        @Override
-        public void positionUpdateReceived(DevicePosition devicePosition) {
-            LatLng latlngPosition = new LatLng(devicePosition.latitude, devicePosition.longitude);
-            setupMarker(latlngPosition);
-            positionMarker.setPosition(latlngPosition);
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlngPosition, 20));
+    @Override
+    public void positionUpdateReceived(DevicePosition devicePosition) {
+        if(currentPosition == null) {
+            previousPosition = currentPosition = new LatLng(devicePosition.latitude, devicePosition.longitude);
         }
+        else {
+            previousPosition = currentPosition;
+            currentPosition = new LatLng(devicePosition.latitude, devicePosition.longitude);
+        }
+        setupMarker(currentPosition);
+        animateMarker(previousPosition,currentPosition);
+    }
 
-        public void setupMarker(LatLng position) {
-            if(positionMarker == null) {
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.navigation_pointer));
-                markerOptions.position(position);
-                positionMarker = mGoogleMap.addMarker(markerOptions);
-            }
+    public void setupMarker(LatLng currentPosition) {
+        if (positionMarker == null) {
+            //LatLng prevPosition = positionMarker.getPosition();
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.navigation_pointer));
+            markerOptions.position(currentPosition);
+            positionMarker = mGoogleMap.addMarker(markerOptions);
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentPosition,20));
         }
+    }
 
-        public void launchUserTrackerService() {
-            serviceIntent.putExtra("UserName",getIntent().getStringExtra("UserName"));
-            startService(serviceIntent);
+    public void launchUserTrackerService() {
+        serviceIntent.putExtra("UserName", getIntent().getStringExtra("UserName"));
+        startService(serviceIntent);
+    }
+
+    public void animateMarker(final LatLng source, final LatLng dest) {
+        final Handler handler  = new Handler();
+        final LinearInterpolator interpolator = new LinearInterpolator();
+        final long startTime = SystemClock.uptimeMillis();
+        final long duration = 1500;
+        if(!source.equals(dest)) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    long elapsed = SystemClock.uptimeMillis() - startTime;
+                    float t = interpolator.getInterpolation((float) elapsed
+                            / duration);
+                    double lng = t * dest.longitude + (1 - t)
+                            * source.longitude;
+                    double lat = t * dest.latitude + (1 - t)
+                            * source.latitude;
+                    positionMarker.setPosition(new LatLng(lat, lng));
+                    //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 20));
+                    if (t < 1.0) {
+                        // Post again 16ms later.
+                        handler.postDelayed(this, 10);
+                    } else {
+                        positionMarker.setVisible(true);
+                    }
+                }
+            });
         }
+    }
 }
