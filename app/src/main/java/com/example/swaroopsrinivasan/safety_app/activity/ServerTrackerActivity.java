@@ -2,6 +2,7 @@ package com.example.swaroopsrinivasan.safety_app.activity;
 
 import android.content.Intent;
 import android.graphics.Interpolator;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -19,6 +20,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -105,6 +107,7 @@ public class ServerTrackerActivity extends TrackerActivity implements ServerTrac
         final LinearInterpolator interpolator = new LinearInterpolator();
         final long startTime = SystemClock.uptimeMillis();
         final long duration = 1500;
+        final float bearing = getBearing(source,dest);
         if(!source.equals(dest)) {
             handler.post(new Runnable() {
                 @Override
@@ -117,15 +120,24 @@ public class ServerTrackerActivity extends TrackerActivity implements ServerTrac
                     double lat = t * dest.latitude + (1 - t)
                             * source.latitude;
                     positionMarker.setPosition(new LatLng(lat, lng));
-                    //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 20));
+                    CameraPosition cameraposition = new CameraPosition.Builder().target(source).
+                            bearing(bearing).zoom(18).tilt(75.0f).build();
+                    mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraposition));
                     if (t < 1.0) {
                         // Post again 16ms later.
-                        handler.postDelayed(this, 10);
-                    } else {
-                        positionMarker.setVisible(true);
+                        handler.postDelayed(this, 16);
                     }
                 }
             });
         }
+    }
+    public float getBearing(LatLng source, LatLng dest) {
+        Location sourceLocation = new Location("CurrentLocationProvider");
+        sourceLocation.setLatitude(source.latitude);
+        sourceLocation.setLongitude(source.longitude);
+        Location destinationLocation = new Location("DestinationLocationProvider");
+        destinationLocation.setLatitude(dest.latitude);
+        destinationLocation.setLongitude(dest.longitude);
+        return sourceLocation.bearingTo(destinationLocation);
     }
 }
