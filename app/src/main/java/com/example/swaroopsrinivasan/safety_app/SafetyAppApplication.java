@@ -3,6 +3,8 @@ package com.example.swaroopsrinivasan.safety_app;
 import android.app.Application;
 import android.content.Context;
 
+import com.example.swaroopsrinivasan.safety_app.Service.FirebasePurgingAlarm;
+
 /**
  * Created by swaroop.srinivasan on 3/31/18.
  */
@@ -13,6 +15,7 @@ public class SafetyAppApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mAppContext = getApplicationContext();
+        FirebasePurgingAlarm.getInstance().startAlarm();
     }
 
     public static Context getContext() {

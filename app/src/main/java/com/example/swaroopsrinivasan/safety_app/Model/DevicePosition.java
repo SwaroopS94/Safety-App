@@ -29,4 +29,6 @@ public class DevicePosition{
     public Double latitude;
     @SerializedName("longitude")
     public Double longitude;
+    @SerializedName("speed")
+    public Float speed;
 }

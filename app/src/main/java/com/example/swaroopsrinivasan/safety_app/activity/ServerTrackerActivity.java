@@ -113,7 +113,7 @@ public class ServerTrackerActivity extends TrackerActivity implements ServerTrac
                 @Override
                 public void run() {
                     long elapsed = SystemClock.uptimeMillis() - startTime;
-                    float t = interpolator.getInterpolation((float) elapsed
+                    float t = interpolator.getInterpolation((float)elapsed
                             / duration);
                     double lng = t * dest.longitude + (1 - t)
                             * source.longitude;

@@ -29,6 +29,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.Manifest;
+import android.location.Location;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -123,7 +124,8 @@ public class LocationUpdateService extends Service {
     public void pushUserLocation(DatabaseReference reference,LocationResult locationResult) {
         String imei = DeviceUtility.getDeviceImei(this);
         String userName = SafetyAppSharedPref.getInstance().getUserName();
-        DevicePosition devicePosition = new DevicePosition(userName,imei,locationResult.getLastLocation().getLatitude(),locationResult.getLastLocation().getLongitude());
+        Location lastLocation = locationResult.getLastLocation();
+        DevicePosition devicePosition = new DevicePosition(userName,imei, lastLocation.getLatitude(),lastLocation.getLongitude(),lastLocation.getSpeed());
         reference.child("Users").child(userName).setValue(devicePosition);
     }
 
