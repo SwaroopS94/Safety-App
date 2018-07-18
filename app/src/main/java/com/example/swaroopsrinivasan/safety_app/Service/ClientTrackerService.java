@@ -76,7 +76,6 @@ public class ClientTrackerService extends Service {
         public void onDataChange(DataSnapshot dataSnapshot) {
             if(dataSnapshot.getValue() != null) {
                 Log.e("Tag",dataSnapshot.getValue().toString());
-                String imei = DeviceUtility.getDeviceImei(getApplicationContext());
                 DevicePosition devicePosition = dataSnapshot.getValue(DevicePosition.class);
                 if(mResultListener != null && (devicePosition != null)) {
                     mResultListener.positionUpdateReceived(devicePosition);

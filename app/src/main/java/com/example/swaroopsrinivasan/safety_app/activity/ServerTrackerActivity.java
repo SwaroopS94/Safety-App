@@ -32,7 +32,7 @@ import butterknife.OnClick;
  * Created by swaroop.srinivasan on 5/19/18.
  */
 
-public class ServerTrackerActivity extends TrackerActivity implements ServerTrackerServiceListener{
+public class ServerTrackerActivity extends TrackerActivity implements ServerTrackerServiceListener {
     GoogleMap mGoogleMap;
     FrameLayout trackerFrame;
     Intent serviceIntent;
@@ -40,16 +40,28 @@ public class ServerTrackerActivity extends TrackerActivity implements ServerTrac
     SessionHandler mSessionHandler;
 
     Marker positionMarker = null;
-    LatLng previousPosition,currentPosition;
+    LatLng previousPosition, currentPosition;
+
+    Handler handler;
+    LinearInterpolator interpolator;
+    long startTime;
+    long duration = 1500;
+    float bearing;
+
+    boolean isHandlerBusy = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracker);
-        serviceIntent = new Intent(this,ClientTrackerService.class);
+        serviceIntent = new Intent(this, ClientTrackerService.class);
         mSessionHandler = SessionHandler.getInstance();
         mSessionHandler.setMServerTrackerListener(this);
-        MapFragment mapFragment =(MapFragment) this.getFragmentManager().findFragmentById(R.id.map);
+        handler = new Handler();
+        interpolator = new LinearInterpolator();
+
+
+        MapFragment mapFragment = (MapFragment) this.getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
 
@@ -93,7 +105,7 @@ public class ServerTrackerActivity extends TrackerActivity implements ServerTrac
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.navigation_pointer));
             markerOptions.position(currentPosition);
             positionMarker = mGoogleMap.addMarker(markerOptions);
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentPosition,20));
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentPosition, 20));
         }
     }
 
@@ -103,34 +115,34 @@ public class ServerTrackerActivity extends TrackerActivity implements ServerTrac
     }
 
     public void animateMarker(final LatLng source, final LatLng dest) {
-        final Handler handler  = new Handler();
-        final LinearInterpolator interpolator = new LinearInterpolator();
-        final long startTime = SystemClock.uptimeMillis();
-        final long duration = 1500;
-        final float bearing = getBearing(source,dest);
-        if(!source.equals(dest)) {
+        startTime = SystemClock.uptimeMillis();
+        bearing = getBearing(source, dest);
+        if (!source.equals(dest)) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
                     long elapsed = SystemClock.uptimeMillis() - startTime;
-                    float t = interpolator.getInterpolation((float)elapsed
+                    float t = interpolator.getInterpolation((float) elapsed
                             / duration);
                     double lng = t * dest.longitude + (1 - t)
                             * source.longitude;
                     double lat = t * dest.latitude + (1 - t)
                             * source.latitude;
                     positionMarker.setPosition(new LatLng(lat, lng));
-                    CameraPosition cameraposition = new CameraPosition.Builder().target(source).
-                            bearing(bearing).zoom(18).tilt(75.0f).build();
-                    mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraposition));
                     if (t < 1.0) {
                         // Post again 16ms later.
                         handler.postDelayed(this, 16);
+                    }
+                    else {
+                        CameraPosition cameraposition = new CameraPosition.Builder().target(source).
+                                bearing(bearing).zoom(18).tilt(72.0f).build();
+                        mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraposition));
                     }
                 }
             });
         }
     }
+
     public float getBearing(LatLng source, LatLng dest) {
         Location sourceLocation = new Location("CurrentLocationProvider");
         sourceLocation.setLatitude(source.latitude);

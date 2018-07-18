@@ -34,10 +34,15 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 public class LocationUpdateService extends Service {
 
     private static final String TAG = LocationUpdateService.class.getSimpleName();
+
+    NotificationCompat.Builder persistentNotificationBuilder;
+    LocationRequest locationRequest;
+    FusedLocationProviderClient fusedLocationProviderClient;
 
 
     @Override
@@ -48,6 +53,7 @@ public class LocationUpdateService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
         buildNotification();
         loginToFirebase();
     }
@@ -60,13 +66,13 @@ public class LocationUpdateService extends Service {
         PendingIntent broadcastIntent = PendingIntent.getBroadcast(
                 this, 0, new Intent(stop), PendingIntent.FLAG_UPDATE_CURRENT);
         // Create the persistent notification
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+        persistentNotificationBuilder = new NotificationCompat.Builder(this)
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(getString(R.string.notification_text))
                 .setOngoing(true)
                 .setContentIntent(broadcastIntent)
                 .setSmallIcon(R.drawable.ic_tracker);
-        startForeground(1, builder.build());
+        startForeground(1, persistentNotificationBuilder.build());
     }
 
     protected BroadcastReceiver stopReceiver = new BroadcastReceiver() {
@@ -100,24 +106,17 @@ public class LocationUpdateService extends Service {
     int count =0;
 
     private void requestLocationUpdates() {
-        LocationRequest request = new LocationRequest();
-        request.setInterval(10000);
-        request.setFastestInterval(5000);
-        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(this);
-        //final String path = getString(R.string.firebase_path) + "/" + getString(R.string.transport_id);
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(5000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         int permission = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
         if (permission == PackageManager.PERMISSION_GRANTED) {
             // Request location updates and when an update is
             // received, store the location in Firebase
-            client.requestLocationUpdates(request, new LocationCallback() {
-                @Override
-                public void onLocationResult(LocationResult locationResult) {
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                    pushUserLocation(ref,locationResult);
-                }
-            }, null);
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, mLocationCallback, null);
         }
     }
 
@@ -126,7 +125,28 @@ public class LocationUpdateService extends Service {
         String userName = SafetyAppSharedPref.getInstance().getUserName();
         Location lastLocation = locationResult.getLastLocation();
         DevicePosition devicePosition = new DevicePosition(userName,imei, lastLocation.getLatitude(),lastLocation.getLongitude(),lastLocation.getSpeed());
-        reference.child("Users").child(userName).setValue(devicePosition);
+        reference = reference.child("Users").child(userName);
+        if(reference != null) {
+            if(reference.child("imei").equals(imei)) {
+                reference.setValue(devicePosition);
+            }
+            else {
+                Toast.makeText(getApplicationContext(), "Use a different userName as "+userName+" is already active", Toast.LENGTH_SHORT).show();
+                stopSelf();
+                stopForeground(true);
+                fusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
+            }
+        }
+        else {
+            reference.setValue(devicePosition);
+        }
     }
 
+    LocationCallback mLocationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+            pushUserLocation(ref, locationResult);
+        }
+    };
 }
