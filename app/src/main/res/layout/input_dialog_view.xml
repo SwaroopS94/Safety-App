@@ -6,7 +6,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Enter UserName"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
         android:id="@+id/tv_dialog_username"
         android:textSize="@dimen/text_size_30"
         android:layout_margin="@dimen/margin_10"

@@ -126,7 +126,7 @@ public class LocationUpdateService extends Service {
         Location lastLocation = locationResult.getLastLocation();
         DevicePosition devicePosition = new DevicePosition(userName,imei, lastLocation.getLatitude(),lastLocation.getLongitude(),lastLocation.getSpeed());
         reference = reference.child("Users").child(userName);
-        if(reference != null) {
+        /*if(reference != null) {
             if(reference.child("imei").equals(imei)) {
                 reference.setValue(devicePosition);
             }
@@ -137,9 +137,9 @@ public class LocationUpdateService extends Service {
                 fusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
             }
         }
-        else {
+        else {*/
             reference.setValue(devicePosition);
-        }
+        //}
     }
 
     LocationCallback mLocationCallback = new LocationCallback() {

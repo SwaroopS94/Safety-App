@@ -131,7 +131,7 @@ public class ServerTrackerActivity extends TrackerActivity implements ServerTrac
                     positionMarker.setPosition(new LatLng(lat, lng));
                     if (t < 1.0) {
                         // Post again 16ms later.
-                        handler.postDelayed(this, 16);
+                        handler.postDelayed(this, 50);
                     }
                     else {
                         CameraPosition cameraposition = new CameraPosition.Builder().target(source).

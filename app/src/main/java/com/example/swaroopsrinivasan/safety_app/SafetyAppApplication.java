@@ -15,7 +15,7 @@ public class SafetyAppApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mAppContext = getApplicationContext();
-        FirebasePurgingAlarm.getInstance().startAlarm();
+        //FirebasePurgingAlarm.getInstance().startAlarm();
     }
 
     public static Context getContext() {

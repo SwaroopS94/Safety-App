@@ -32,30 +32,30 @@ import java.util.Map;
  * Created by swaroop.srinivasan on 5/26/18.
  */
 
-public class ClientTrackerService extends Service {
+public class ClientTrackerService extends IntentService {
     public DatabaseReference mDatabase;
     public Query mQuery;
     ServerTrackerServiceListener mResultListener;
     String userName;
     Handler mHandler;
-    /*public ClientTrackerService() {
-        super("ClientTrackerService");
-    }*/
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        userName = intent.getStringExtra("UserName");
-        if(userName != null) {
-            mQuery = mDatabase.child("Users").child(userName);
-            getPositionUpdate();
-        }
-        return super.onStartCommand(intent, flags, startId);
+    public ClientTrackerService() {
+        super("ClientTrackerService");
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    protected void onHandleIntent(@Nullable Intent intent) {
+        userName = intent.getStringExtra("UserName");
+        if(userName != null) {
+            mQuery = mDatabase.child("Users").child(userName);
+            getPositionUpdate();
+        }
     }
 
     @Override
