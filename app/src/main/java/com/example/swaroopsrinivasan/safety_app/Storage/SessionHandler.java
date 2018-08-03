@@ -24,4 +24,9 @@ public class SessionHandler {
     public ServerTrackerServiceListener mServerTrackerListener;
 
 
+    @Getter
+    @Setter
+    public String userName;
+
+
 }

@@ -15,29 +15,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.SignUpActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".activity.SignUpActivity"/>
         <activity android:name=".activity.SafetyActivity" />
         <activity android:name=".activity.ServerTrackerActivity" />
 
         <service
             android:name=".Service.LocationUpdateService"
             android:enabled="true"
-            android:exported="true"></service>
-
-        <service android:name=".Service.ClientTrackerService"
+            android:exported="true" />
+        <service
+            android:name=".Service.ClientTrackerService"
             android:enabled="true"
-            android:exported="true"
-            />
-
-        <service android:name=".Service.PurgeAlarmReceiver"
-            android:enabled="true"
-            ></service>
+            android:exported="true" />
+        <service
+            android:name=".Service.PurgeAlarmReceiver"
+            android:enabled="true" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -52,7 +44,16 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps" />
+        <activity
+            android:name=".activity.SplashActivity"
+            android:label="@string/title_activity_splash"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

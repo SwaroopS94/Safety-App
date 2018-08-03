@@ -24,11 +24,12 @@ import static android.content.ContentValues.TAG;
 
 public class ContactsSelector extends AlertDialog implements DialogInterface.OnMultiChoiceClickListener{
     private AlertDialog.Builder builder;
+    private AlertDialog alertDialog;
     private ArrayAdapter<String> adapter;
     private Context mContext;
     private SessionHandler mSessionhandler;
 
-    private final static int NUMBER_OF_SAFETY_CONTACTS = 5;
+    private final static int NUMBER_OF_SAFETY_CONTACTS = 4;
     private int numberOfContactsAdded=0;
     private List<Contact> mSafetyContacts;
     protected ContactsSelector(Context context) {
@@ -45,9 +46,10 @@ public class ContactsSelector extends AlertDialog implements DialogInterface.OnM
         getContactList();
     }
     public void showDialog() {
-        builder.setTitle("Select Safety Contacts");
         builder.setMultiChoiceItems(contactsName, null, this);
-        builder.show();
+        alertDialog = builder.create();
+        alertDialog.setTitle("Select "+NUMBER_OF_SAFETY_CONTACTS+" Contacts");
+        alertDialog.show();
     }
 
 
@@ -91,6 +93,7 @@ public class ContactsSelector extends AlertDialog implements DialogInterface.OnM
         if(numberOfContactsAdded < NUMBER_OF_SAFETY_CONTACTS) {
             numberOfContactsAdded++;
             mSafetyContacts.add(contacts.get(i));
+            alertDialog.setTitle("Select "+(NUMBER_OF_SAFETY_CONTACTS-numberOfContactsAdded)+" Contacts");
         }
         else {
             mSessionhandler.setmSafetyContacts(mSafetyContacts);
