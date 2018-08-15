@@ -8,4 +8,7 @@
     <string name="firebase_password" translatable="false">swaroop94</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_splash">SplashActivity</string>
+
+    <string name="fcm_notification_title">Track User</string>
+    <string name="fcm_notification_message">Your are requested to track the user %1$s</string>
 </resources>
