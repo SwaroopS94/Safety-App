@@ -22,6 +22,7 @@ import com.example.swaroopsrinivasan.safety_app.Dialog.ContactsSelector;
 import com.example.swaroopsrinivasan.safety_app.Dialog.CustomEditTextDialog;
 import com.example.swaroopsrinivasan.safety_app.R;
 import com.example.swaroopsrinivasan.safety_app.Service.LocationUpdateService;
+import com.example.swaroopsrinivasan.safety_app.utils.MessageNotifier;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,6 +33,8 @@ public class SafetyActivity extends BaseActivity implements View.OnClickListener
     @BindView(R.id.btn_track_user) Button btnTrackUser;
 
     @BindView(R.id.rl_parent_layout_safety_activity) RelativeLayout rlParentLayout;
+
+    @BindView(R.id.btn_notify_rockstars) Button btnNotifyRockstars;
 
     ArrayAdapter<String> arrayAdapter;
 
@@ -49,6 +52,7 @@ public class SafetyActivity extends BaseActivity implements View.OnClickListener
         btnSelectContacts.setOnClickListener(this);
         btnShareLocation.setOnClickListener(this);
         btnTrackUser.setOnClickListener(this);
+        btnNotifyRockstars.setOnClickListener(this);
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_multichoice);
     }
 
@@ -71,6 +75,9 @@ public class SafetyActivity extends BaseActivity implements View.OnClickListener
             case R.id.btn_track_user:
                 userNameInputDialog = new CustomEditTextDialog(this,btnPositiveDialogListener,btnNegativeDialogListener);
                 userNameInputDialog.show();
+                break;
+            case R.id.btn_notify_rockstars:
+                new MessageNotifier().execute();
                 break;
         }
     }

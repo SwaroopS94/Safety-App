@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
 
     <!--
      Set custom default icon. This is used when no icon is set for incoming notification messages.
@@ -34,7 +35,19 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activity.SignUpActivity" />
         <activity android:name=".activity.SafetyActivity" />
-        <activity android:name=".activity.ServerTrackerActivity" />
+        <activity android:name=".activity.ServerTrackerActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="http"
+                    android:host="safety-app.com"
+                    android:pathPrefix="/navigate" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name=".Service.LocationUpdateService"

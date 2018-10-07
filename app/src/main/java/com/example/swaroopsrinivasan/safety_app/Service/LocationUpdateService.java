@@ -72,6 +72,7 @@ public class LocationUpdateService extends Service {
                 .setOngoing(true)
                 .setContentIntent(broadcastIntent)
                 .setSmallIcon(R.drawable.ic_tracker);
+
         startForeground(1, persistentNotificationBuilder.build());
     }
 
